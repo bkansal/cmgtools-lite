@@ -31,22 +31,22 @@ class chsMETAnalyzer( Analyzer ):
     def process(self, event):
         self.readCollections( event.input )
 
-        chs_dz     = []
+        #chs_dz     = []
         chs_fromPV = []
         for pfcand in self.handles['packedCandidates'].product():
 
             # CHS definition
             if pfcand.fromPV()>0: chs_fromPV.append( ( pfcand.px(), pfcand.py() ) )
 
-            # W mass definition (dz)
-            if (pfcand.charge()!=0 and abs(pfcand.pdgId())==211):
-                if abs(pfcand.dz())>self.maxDz:
-                    continue # skip CH with dz larger than maxDz 
+            ## W mass definition (dz)
+            #if (pfcand.charge()!=0 and abs(pfcand.pdgId())==211):
+            #    if abs(pfcand.dz())>self.maxDz:
+            #        continue # skip CH with dz larger than maxDz 
 
-            chs_dz.append( (pfcand.px(), pfcand.py()) )
+            #chs_dz.append( (pfcand.px(), pfcand.py()) )
 
         setattr(event, "chsMET",   sumXY(chs_fromPV))
-        setattr(event, "chsMETDz", sumXY(chs_dz))
+        #setattr(event, "chsMETDz", sumXY(chs_dz))
 
         return True
 
