@@ -77,6 +77,11 @@ L1res_extra_collections = {
 L1L2L3_extra_variables   = []
 L1L2L3_extra_collections = PVPU_collections 
 
+## L2res
+
+L2res_extra_variables   = []
+L2res_extra_collections = PVPU_collections 
+
 jet_metVariables = [
     NTupleVariable("met_caloPt", lambda ev : ev.met.caloMETPt(), help="calo met p_{T}"),
     NTupleVariable("met_caloPhi", lambda ev : ev.met.caloMETPhi(), help="calo met phi"),

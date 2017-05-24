@@ -42,9 +42,9 @@ triggerFlagsAna = cfg.Analyzer(
     fallbackProcessName = 'HLT2',
     prescaleProcessName = 'PAT',
     prescaleFallbackProcessName = 'RECO',
-    unrollbits = False,
-    saveIsUnprescaled = False,
-    checkL1prescale = False,
+    unrollbits = True,
+    saveIsUnprescaled = True,
+    checkL1prescale = True,
     triggerBits = {
         # "<name>" : [ 'HLT_<Something>_v*', 'HLT_<SomethingElse>_v*' ] 
     }
@@ -369,16 +369,16 @@ metAna = cfg.Analyzer(
 # Core sequence of all common modules
 
 jet_coreSequence = [
+    skimAnalyzer,
     vertexAna,
+    triggerAna,
     pileUpAna,
     truePUAna,
     genAna,
     lheAna,
     lheWeightAna,
-    skimAnalyzer,
    #eventSelector,
     jsonAna,
-    triggerAna,
     pdfwAna,
     triggerFlagsAna,
     eventFlagsAna,
