@@ -165,20 +165,20 @@ pdfwAna = cfg.Analyzer(
 lepAna = cfg.Analyzer(
     LeptonAnalyzer, name="leptonAnalyzer",
     # input collections
-    muons='slimmedMuons',
-    electrons='slimmedElectrons',
-    rhoMuon= 'fixedGridRhoFastjetCentralNeutral',
-    rhoElectron = 'fixedGridRhoFastjetCentralNeutral',
-    # energy scale corrections and ghost muon suppression (off by default)
-    doMuonScaleCorrections=False,
-    doElectronScaleCorrections=False, # "embedded" in 5.18 for regression
-    doSegmentBasedMuonCleaning=False,
+    muons               = 'slimmedMuons',
+    electrons           = 'slimmedElectrons',
+    rhoMuon             = 'fixedGridRhoFastjetCentralNeutral',
+    rhoElectron         = 'fixedGridRhoFastjetCentralNeutral',
+    # energy scale corre    ctions and ghost muon suppression (off by default)
+    doMuonScaleCorrections      = False,
+    doElectronScaleCorrections  = False, # "embedded" in 5.18 for regression
+    doSegmentBasedMuonCleaning  = False,
     # inclusive very loose muon selection
-    inclusive_muon_id  = "POG_ID_Loose",
-    inclusive_muon_pt  = 3,
-    inclusive_muon_eta = 2.4,
-    inclusive_muon_dxy = 0.5,
-    inclusive_muon_dz  = 1.0,
+    inclusive_muon_id  = None,
+    inclusive_muon_pt  = 0,
+    inclusive_muon_eta = 999.,
+    inclusive_muon_dxy = 999.,
+    inclusive_muon_dz  = 999.,
     muon_dxydz_track = "innerTrack",
     # loose muon selection
     loose_muon_id     = "POG_ID_Loose",
@@ -191,19 +191,19 @@ lepAna = cfg.Analyzer(
     inclusive_electron_id  = "",
     inclusive_electron_pt  = 5,
     inclusive_electron_eta = 2.5,
-    inclusive_electron_dxy = 0.5,
-    inclusive_electron_dz  = 1.0,
-    inclusive_electron_lostHits = 1.0,
+    inclusive_electron_dxy = 999.,
+    inclusive_electron_dz  = 999.,
+    inclusive_electron_lostHits = 999.,
     # loose electron selection
-    loose_electron_id     = "POG_Cuts_ID_2012_Veto_full5x5",
+    loose_electron_id     = "POG_Cuts_ID_SPRING16_25ns_v1_ConvVetoDxyDz_Veto",
     loose_electron_pt     = 7,
     loose_electron_eta    = 2.5,
-    loose_electron_dxy    = 0.05,
-    loose_electron_dz     = 0.1,
+    loose_electron_dxy    = 0.1,
+    loose_electron_dz     = 0.2,
     loose_electron_relIso = 0.5,
-    loose_electron_lostHits = 1.0,
+    loose_electron_lostHits = 999.,
     # muon isolation correction method (can be "rhoArea" or "deltaBeta")
-    mu_isoCorr = "rhoArea" ,
+    mu_isoCorr = "deltaBeta" ,
     mu_effectiveAreas = "Spring15_25ns_v1", #(can be 'Data2012' or 'Phys14_25ns_v1' or 'Spring15_25ns_v1')
     # electron isolation correction method (can be "rhoArea" or "deltaBeta")
     ele_isoCorr = "rhoArea" ,
@@ -267,8 +267,8 @@ jetAna = cfg.Analyzer(
     copyJetsByValue = False,      #Whether or not to copy the input jets or to work with references (should be 'True' if JetAnalyzer is run more than once)
     genJetCol = 'slimmedGenJets',
     rho = ('fixedGridRhoFastjetAll','',''),
-    jetPt = 25.,
-    jetEta = 4.7,
+    jetPt = 3.,
+    jetEta = 999.,
     jetEtaCentral = 2.4,
     cleanJetsFromLeptons = True,
     jetLepDR = 0.4,
@@ -281,8 +281,8 @@ jetAna = cfg.Analyzer(
     recalibrateJets = True, #'MC', # True, False, 'MC', 'Data'
     applyL2L3Residual = True, # Switch to 'Data' when they will become available for Data
     recalibrationType = "AK4PFchs",
-    mcGT     = "Spring16_23Sep2016V2_MC",
-    dataGT   = [(1,"Spring16_23Sep2016BCDV2_DATA"),(276831,"Spring16_23Sep2016EFV2_DATA"),(278802,"Spring16_23Sep2016GV2_DATA"),(280919,"Spring16_23Sep2016HV2_DATA")],
+    mcGT     = "Summer16_23Sep2016V4_MC",
+    dataGT   = [(1,"Summer16_23Sep2016BCDV4_DATA"),(276831,"Summer16_23Sep2016EFV4_DATA"),(278802,"Summer16_23Sep2016GV4_DATA"),(280919,"Summer16_23Sep2016HV4_DATA")],
     jecPath = "${CMSSW_BASE}/src/CMGTools/RootTools/data/jec/",
     shiftJEC = 0, # set to +1 or -1 to apply +/-1 sigma shift to the nominal jet energies
     addJECShifts = False, # if true, add  "corr", "corrJECUp", and "corrJECDown" for each jet (requires uncertainties to be available!)
@@ -390,12 +390,12 @@ jet_coreSequence = [
 
 jet_objectSequence = [
     lepAna,
-    ttHLepSkim,
+    #ttHLepSkim,
     #ttHLepMCAna,
-    photonAna,
+    #photonAna,
     #isoTrackAna,
     jetAna,
-    metAna,
+    #metAna,
     #ttHCoreEventAna,
     # ttHJetMETSkim,
     # susyLeptonMatchAna,

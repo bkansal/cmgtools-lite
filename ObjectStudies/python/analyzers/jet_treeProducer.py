@@ -1,5 +1,6 @@
 from PhysicsTools.Heppy.analyzers.core.AutoFillTreeProducer  import * 
 from PhysicsTools.Heppy.analyzers.core.autovars import NTupleCollection
+from CMGTools.TTHAnalysis.analyzers.ntupleTypes import *
 
 import operator
 
@@ -25,29 +26,24 @@ jet_globalVariables = [
     NTupleVariable("truePUIntBX0",  lambda ev: getattr(ev, "truePileup_n", -1), float, mcOnly=True, help="nPU (int number, as drawn from Poissonian with mean nTrueInt) for BX=0"),
 ]
 
-# Collections for everybody
+# new ntuple type for genjets
+genJetType = NTupleObjectType("genJets",  baseObjectTypes = [ fourVectorType ], mcOnly=True, variables = [
+    NTupleVariable("nConstituents", lambda x : x.nConstituents() ,help="Number of Constituents"),
+])
+
+# Standard collections for leptons and AK4 jets
 jet_globalCollections = {
             "genParticles"       : NTupleCollection("genPartAll",  genParticleWithMotherId, 200, help="all pruned genparticles"),
+            "selectedLeptons"    : NTupleCollection("LepGood", leptonTypeSusy, 8, help="Leptons after the preselection"),
+            "otherLeptons"       : NTupleCollection("LepOther", leptonTypeSusy, 8, help="Leptons after the preselection"),
+            "cleanJetsAll"       : NTupleCollection("Jet",     jetTypeSusyExtra, 25, help="Cental jets after full selection and cleaning, sorted by pt"),
+            "discardedJets"      : NTupleCollection("DiscJet", jetTypeSusyExtra, 15, help="Jets discarted in the jet-lepton cleaning"),
+            "cleanJetsFailIdAll" : NTupleCollection("JetFailId", jetTypeSusyExtra, 15, help="Jets failing id after jet-lepton cleaning"),
+            "genJets"            : NTupleCollection("GenJet",  genJetType,  15, help="Gen Jets, sorted by pt"),
 }
 
-## L1res
-# global variables for L1res
-L1res_extra_variables = [
-    NTupleVariable("nAllVert",  lambda ev: len(ev.vertices), int, help="Number of all vertices"),
-]
 
-# define a new ntuple type for the offset energy density
-from CMGTools.ObjectStudies.analyzers.offsetAnalyzer import offset_flavors, offset_eta_thresholds
-offsetType = NTupleObjectType("offsetVectorType", variables = [   NTupleVariable(str(k),  operator.itemgetter(k), help="Component %s"%k ) for k in offset_flavors ] )
-# L1res extra collections 
-L1res_extra_collections = {
-    'offset_et_flavor' : NTupleCollection( "OffsetEt", offsetType, len(offset_eta_thresholds) -1, help = "offset ET")
-}
-
-## L1L2L3
-
-L1L2L3_extra_variables = []
-
+## PV and PU information.
 # define a new ntuple type for the IT PU vertices
 pvType = NTupleObjectType("VertexType", variables = [   
     NTupleVariable("z",      lambda v:v.z(), help="z positon" ), 
@@ -56,11 +52,30 @@ puInfoType = NTupleObjectType("puInfoType", variables = [
     NTupleVariable("truePUInt",      lambda p:p.nPU(), mcOnly = True, help=" number of true PU interactions" ), 
     ])
 
-L1L2L3_extra_collections = {
+PVPU_collections = {
     'goodVertices' : NTupleCollection( "GoodVertices", pvType, 100, help = "good offline primary vertices"),
-    'pileUpInfo'   : NTupleCollection( "BX", puInfoType, 13, mcOnly = True, help = "all BX (sorted -12 ... 0)")
+    'pileUpInfo'   : NTupleCollection( "BX", puInfoType, 20, mcOnly = True, help = "all BX (sorted -12 ... 0)")
 }
 
+
+## L1res
+# global variables for L1res
+L1res_extra_variables = [
+    NTupleVariable("nAllVert",  lambda ev: len(ev.vertices), int, help="Number of all vertices"),
+]
+
+# define a new ntuple type for the offset energy density
+from CMGTools.ObjectStudies.analyzers.OffsetAnalyzer import offset_flavors_stored, offset_eta_thresholds
+offsetType = NTupleObjectType("offsetVectorType", variables = [   NTupleVariable(str(k),  operator.itemgetter(k), help="Component %s"%k ) for k in offset_flavors_stored ] )
+# L1res extra collections 
+L1res_extra_collections = {
+    'offset' : NTupleCollection( "Offset", offsetType, len(offset_eta_thresholds) -1, help = "offset ET")
+}
+
+## L1L2L3
+
+L1L2L3_extra_variables   = []
+L1L2L3_extra_collections = PVPU_collections 
 
 jet_metVariables = [
     NTupleVariable("met_caloPt", lambda ev : ev.met.caloMETPt(), help="calo met p_{T}"),
@@ -135,13 +150,6 @@ jet_metVariables = [
 #    }
 
 #            ## ---------------------------------------------
-#            "selectedLeptons"    : NTupleCollection("LepGood", leptonTypeSusy, 8, help="Leptons after the preselection"),
-#            "otherLeptons"       : NTupleCollection("LepOther", leptonTypeSusy, 8, help="Leptons after the preselection"),
-#            ##------------------------------------------------
-#            "cleanJetsAll"       : NTupleCollection("Jet",     jetTypeSusyExtra, 25, help="Cental jets after full selection and cleaning, sorted by pt"),
-#            "genJets"            : NTupleCollection("GenJet",  genJetType,  15, help="Gen Jets, sorted by pt"),
-#            "discardedJets"      : NTupleCollection("DiscJet", jetTypeSusyExtra, 15, help="Jets discarted in the jet-lepton cleaning"),
-#            "cleanJetsFailIdAll" : NTupleCollection("JetFailId", jetTypeSusyExtra, 15, help="Jets failing id after jet-lepton cleaning"),
 #            ##------------------------------------------------
 #            "selectedPhotons"    : NTupleCollection("gamma", photonTypeSusy, 50, help="photons with pt>15 and loose cut based ID"),
 #            "LHE_weights" : NTupleCollection("LHEweight", weightsInfoType, 1000, mcOnly=True, help="LHE weight info"),

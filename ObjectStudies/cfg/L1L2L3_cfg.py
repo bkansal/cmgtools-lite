@@ -12,7 +12,8 @@ from CMGTools.ObjectStudies.analyzers.jetCore_modules_cff import *
 selectedComponents = [
         ]
 
-sequence = cfg.Sequence( jet_coreSequence )
+sequence  = cfg.Sequence( jet_coreSequence )
+sequence += jet_objectSequence 
 
 # append offset analyzer for L1L2L3 to core sequence
 from CMGTools.ObjectStudies.analyzers.offsetAnalyzer import offsetAnalyzer
@@ -40,7 +41,11 @@ treeProducer = cfg.Analyzer(
 # Append it to the sequence
 sequence.append( treeProducer )
 
-test = 'mc'
+test       = 'mc'
+preprocess = True
+
+if getHeppyOption("mc")  : test = "mc"
+if getHeppyOption("data"): test = "data"
 
 if getHeppyOption("loadSamples"):
     from CMGTools.RootTools.samples.samples_13TeV_RunIISummer16MiniAODv2 import *
@@ -59,12 +64,22 @@ if getHeppyOption("loadSamples"):
 from CMGTools.TTHAnalysis.tools.EOSEventsWithDownload import EOSEventsWithDownload
 from PhysicsTools.HeppyCore.framework.eventsfwlite import Events
 event_class = Events
+
 if getHeppyOption("fetch"):
     event_class = EOSEventsWithDownload
+
+if preprocess:
+    preprocessorFile = "$CMSSW_BASE/src/CMGTools/ObjectStudies/preprocessor/recluster.py"
+    from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
+    preprocessor = CmsswPreprocessor(preprocessorFile)
+    jetAna.jetCol   = ("selectedPatJetsAK4PFCHS","","USER")
+    jetAna.genJetCol= ("ak4GenJetsNoNu","","USER")
+else:
+    preprocessor = None
 
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence,
                      services = [],
-#                     preprocessor=preprocessor, # comment if pre-processor non needed
+                     preprocessor=preprocessor, # comment if pre-processor non needed
                      events_class = event_class)
 

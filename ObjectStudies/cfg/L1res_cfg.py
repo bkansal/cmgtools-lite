@@ -15,15 +15,15 @@ selectedComponents = [
 sequence = cfg.Sequence( jet_coreSequence )
 
 # append offset analyzer for L1res to core sequence
-from CMGTools.ObjectStudies.analyzers.offsetAnalyzer import offsetAnalyzer
-offsetAna = offsetAnalyzer.defaultConfig
+from CMGTools.ObjectStudies.analyzers.OffsetAnalyzer import OffsetAnalyzer
+offsetAna = OffsetAnalyzer.defaultConfig
 sequence.append( offsetAna )
 
 # make tree Producer
 from CMGTools.ObjectStudies.analyzers.jet_treeProducer import *
 
 # add the offset collections to the default (global) collections
-L1res_collections = jet_globalCollections
+L1res_collections = {} 
 L1res_collections.update( L1res_extra_collections )
 L1res_globalVariables = jet_globalVariables + L1res_extra_variables
 
@@ -41,6 +41,9 @@ treeProducer = cfg.Analyzer(
 sequence.append( treeProducer )
 
 test = 'mc'
+
+if getHeppyOption("mc")  : test = "mc"
+if getHeppyOption("data"): test = "data"
 
 if getHeppyOption("loadSamples"):
     from CMGTools.RootTools.samples.samples_13TeV_RunIISummer16MiniAODv2 import *
