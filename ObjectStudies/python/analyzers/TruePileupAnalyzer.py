@@ -17,7 +17,7 @@ class TruePileupAnalyzer( Analyzer ):
         super(TruePileupAnalyzer,self).__init__(cfg_ana,cfg_comp,looperName)
         self.minBiasXSEC = self.cfg_ana.minBiasXSEC
 
-        self.remote_file = os.path.expandvars( self.cfg_ana.pileup_remote_file )
+        self.remote_file = os.path.expandvars( self.cfg_ana.pileup_file )
         #self.local_file  = os.path.expandvars( "$CMSSW_BASE/src/CMGTools/ObjectStudies/data/pileup_latest.txt" )
 
         #if not os.path.exists( self.local_file ) or ( os.path.exists( self.local_file )  and filecmp.cmp(self.local_file, self.remote_file) ):
@@ -68,6 +68,6 @@ class TruePileupAnalyzer( Analyzer ):
 setattr(TruePileupAnalyzer,"defaultConfig", cfg.Analyzer(
         class_object = TruePileupAnalyzer,
         minBiasXSEC  = 69200,
-        pileup_remote_file = "/afs/cern.ch/cms/CAF/CMSCOMM/COMM_DQM/certification/Collisions16/13TeV/PileUp/pileup_latest.txt"
+        pileup_file = "$CMSSW_BASE/src/CMGTools/ObjectStudies/data/pileup_latest.txt"
         )
 )

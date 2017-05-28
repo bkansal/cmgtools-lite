@@ -5,7 +5,7 @@ import PhysicsTools.HeppyCore.framework.config as cfg
 from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 
 #Load all analyzers
-from CMGTools.ObjectStudies.analyzers.jetCore_modules_cff import *
+from CMGTools.ObjectStudies.analyzers.jet_modules_cff import *
 
 #!# #-------- SAMPLES AND SEQUENCE -----------
 
@@ -14,11 +14,6 @@ selectedComponents = [
 
 sequence  = cfg.Sequence( jet_coreSequence )
 sequence += jet_objectSequence 
-
-# append offset analyzer for L1L2L3 to core sequence
-from CMGTools.ObjectStudies.analyzers.offsetAnalyzer import offsetAnalyzer
-offsetAna = offsetAnalyzer.defaultConfig
-sequence.append( offsetAna )
 
 # make tree Producer
 from CMGTools.ObjectStudies.analyzers.jet_treeProducer import *
@@ -47,6 +42,14 @@ preprocess = True
 if getHeppyOption("mc")  : test = "mc"
 if getHeppyOption("data"): test = "data"
 
+if test=='mc':
+    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster_mc.py"
+else:                                     
+    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster_data.py"
+    triggerFlagsAna.unrollbits          = True
+    triggerFlagsAna.saveIsUnprescaled   = True
+    triggerFlagsAna.checkL1prescale     = True
+
 if getHeppyOption("loadSamples"):
     from CMGTools.RootTools.samples.samples_13TeV_RunIISummer16MiniAODv2 import *
     from CMGTools.RootTools.samples.samples_13TeV_DATA2016 import *
@@ -69,7 +72,6 @@ if getHeppyOption("fetch"):
     event_class = EOSEventsWithDownload
 
 if preprocess:
-    preprocessorFile = "$CMSSW_BASE/src/CMGTools/ObjectStudies/preprocessor/recluster.py"
     from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
     preprocessor = CmsswPreprocessor(preprocessorFile)
     jetAna.jetCol   = ("selectedPatJetsAK4PFCHS","","USER")

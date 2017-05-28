@@ -5,7 +5,7 @@ import PhysicsTools.HeppyCore.framework.config as cfg
 from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
 
 #Load all analyzers
-from CMGTools.ObjectStudies.analyzers.jetCore_modules_cff import *
+from CMGTools.ObjectStudies.analyzers.jet_modules_cff import *
 
 #!# #-------- SAMPLES AND SEQUENCE -----------
 
@@ -24,9 +24,6 @@ sequence.append( offsetAna )
 from CMGTools.ObjectStudies.samples.jet_triggers_13TeV_DATA2016 import L2res_triggers 
 # trigger flag analyzer
 triggerFlagsAna.triggerBits         = L2res_triggers
-triggerFlagsAna.unrollbits          = True
-triggerFlagsAna.saveIsUnprescaled   = True
-triggerFlagsAna.checkL1prescale     = True
 
 # make tree Producer
 from CMGTools.ObjectStudies.analyzers.jet_treeProducer import *
@@ -34,7 +31,7 @@ from CMGTools.ObjectStudies.analyzers.jet_treeProducer import *
 # add the offset collections to the default (global) collections
 L2res_collections = jet_globalCollections
 L2res_collections.update( L2res_extra_collections )
-L2res_globalVariables = jet_globalVariables + L2res_extra_variables
+L2res_globalVariables = jet_globalVariables + L2res_extra_variables 
 
 treeProducer = cfg.Analyzer(
      AutoFillTreeProducer, name='treeProducer',
@@ -43,7 +40,7 @@ treeProducer = cfg.Analyzer(
      defaultFloatType = 'F', # use Float_t for floating point
      PDFWeights = PDFWeights,
      globalVariables = L2res_globalVariables,
-     globalObjects   = [],
+     globalObjects   = L2res_globalObjects,
      collections     = L2res_collections 
 )
 # Append it to the sequence
@@ -54,6 +51,22 @@ preprocess = True
 
 if getHeppyOption("mc")  : test = "mc"
 if getHeppyOption("data"): test = "data"
+
+if test=='mc':
+    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster_mc.py"
+else:                                     
+    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster_data.py"
+    triggerFlagsAna.unrollbits          = True
+    triggerFlagsAna.saveIsUnprescaled   = True
+    triggerFlagsAna.checkL1prescale     = True
+
+if preprocess:
+    from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
+    preprocessor = CmsswPreprocessor(preprocessorFile)
+    jetAna.jetCol   = ("selectedPatJetsAK4PFCHS","","USER")
+    jetAna.genJetCol= ("ak4GenJetsNoNu","","USER")
+else:
+    preprocessor = None
 
 if getHeppyOption("loadSamples"):
     from CMGTools.RootTools.samples.samples_13TeV_RunIISummer16MiniAODv2 import *
@@ -75,15 +88,6 @@ event_class = Events
 
 if getHeppyOption("fetch"):
     event_class = EOSEventsWithDownload
-
-if preprocess:
-    preprocessorFile = "$CMSSW_BASE/src/CMGTools/ObjectStudies/preprocessor/recluster.py"
-    from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
-    preprocessor = CmsswPreprocessor(preprocessorFile)
-    jetAna.jetCol   = ("selectedPatJetsAK4PFCHS","","USER")
-    jetAna.genJetCol= ("ak4GenJetsNoNu","","USER")
-else:
-    preprocessor = None
 
 config = cfg.Config( components = selectedComponents,
                      sequence = sequence,
