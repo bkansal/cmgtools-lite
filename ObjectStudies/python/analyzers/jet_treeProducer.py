@@ -56,6 +56,7 @@ jet_globalCollections = {
 # MET variables
 jet_metVariables = [
 
+    NTupleVariable("chsSumPt", lambda ev : ev.chsSumPt, help="chs sumPt (fromPV definition)"),
     NTupleVariable("met_chsPt", lambda ev : ev.chsMET.pt(), help="chs met p_{T} (fromPV definition)"),
     NTupleVariable("met_chsPhi", lambda ev : ev.chsMET.phi(), help="chs met phi (fromPV definition)"),
 
@@ -73,7 +74,7 @@ puInfoType = NTupleObjectType("puInfoType", variables = [
 
 PVPU_collections = {
     'goodVertices' : NTupleCollection( "GoodVertices", pvType, 100, help = "good offline primary vertices"),
-    'pileUpInfo'   : NTupleCollection( "BX", puInfoType, 20, mcOnly = True, help = "all BX (sorted -12 ... 0)")
+    'pileUpInfo'   : NTupleCollection( "BX", puInfoType, 20, mcOnly = True, help = "all BX (sorted -12 ... +3)")
 }
 
 ## L1res
