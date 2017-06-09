@@ -169,8 +169,8 @@ jetTypeSusyExtraLight = NTupleObjectType("jetSusyExtraLight",  baseObjectTypes =
     NTupleVariable("CorrFactor_L1L2", lambda x: x.CorrFactor_L1L2 if hasattr(x,'CorrFactor_L1L2') else 0, help="L1L2 correction factor"),
     NTupleVariable("CorrFactor_L1L2L3", lambda x: x.CorrFactor_L1L2L3 if hasattr(x,'CorrFactor_L1L2L3') else 0, help="L1L2L3 correction factor"),
     NTupleVariable("CorrFactor_L1L2L3Res", lambda x: x.CorrFactor_L1L2L3Res if hasattr(x,'CorrFactor_L1L2L3Res') else 0, help="L1L2L3Res correction factor"),
-    NTupleVariable("chHEF", lambda x : x.chargedHadronEnergyFraction(), float, mcOnly = False, help="chargedHadronEnergyFraction (relative to uncorrected jet energy)"),
-    NTupleVariable("neHEF", lambda x : x.neutralHadronEnergyFraction(), float, mcOnly = False,help="neutralHadronEnergyFraction (relative to uncorrected jet energy)"),
+    NTupleVariable("chHEF", lambda x : x.correctedJet("Uncorrected").chargedHadronEnergyFraction(), float, mcOnly = False, help="chargedHadronEnergyFraction (relative to uncorrected jet energy)"),
+    NTupleVariable("neHEF", lambda x : x.correctedJet("Uncorrected").neutralHadronEnergyFraction(), float, mcOnly = False,help="neutralHadronEnergyFraction (relative to uncorrected jet energy)"),
 ])
 
 jetTypeSusySuperLight = NTupleObjectType("jet",  baseObjectTypes = [ fourVectorType ], variables = [
@@ -193,11 +193,11 @@ jetTypeSusyExtra = NTupleObjectType("jetSusyExtra",  baseObjectTypes = [ jetType
     NTupleVariable("nSubJets40", lambda x : getattr(x, "nSubJets40", 0), int, help="Number of subjets with pt > 40 (kt, R=0.2)"), 
     NTupleVariable("nSubJetsZ01", lambda x : getattr(x, "nSubJetsZ01", 0), int, help="Number of subjets with pt > 0.1 * pt(jet) (kt, R=0.2)"), 
     # --------------- 
-    NTupleVariable("phEF", lambda x : x.photonEnergyFraction(), float, mcOnly = False,help="photonEnergyFraction (relative to corrected jet energy)"),
-    NTupleVariable("eEF", lambda x : x.electronEnergyFraction(), float, mcOnly = False,help="electronEnergyFraction (relative to corrected jet energy)"),
-    NTupleVariable("muEF", lambda x : x.muonEnergyFraction(), float, mcOnly = False,help="muonEnergyFraction (relative to corrected jet energy)"),
-    NTupleVariable("HFHEF", lambda x : x.HFHadronEnergyFraction(), float, mcOnly = False,help="HFHadronEnergyFraction (relative to corrected jet energy)"),
-    NTupleVariable("HFEMEF", lambda x : x.HFEMEnergyFraction(), float, mcOnly = False,help="HFEMEnergyFraction (relative to corrected jet energy)"),
+    NTupleVariable("phEF", lambda x : x.correctedJet("Uncorrected").photonEnergyFraction(), float, mcOnly = False,help="photonEnergyFraction (relative to uncorrected jet energy)"),
+    NTupleVariable("eEF", lambda x : x.correctedJet("Uncorrected").electronEnergyFraction(), float, mcOnly = False,help="electronEnergyFraction (relative to uncorrected jet energy)"),
+    NTupleVariable("muEF", lambda x : x.correctedJet("Uncorrected").muonEnergyFraction(), float, mcOnly = False,help="muonEnergyFraction (relative to uncorrected jet energy)"),
+    NTupleVariable("HFHEF", lambda x : x.correctedJet("Uncorrected").HFHadronEnergyFraction(), float, mcOnly = False,help="HFHadronEnergyFraction (relative to uncorrected jet energy)"),
+    NTupleVariable("HFEMEF", lambda x : x.correctedJet("Uncorrected").HFEMEnergyFraction(), float, mcOnly = False,help="HFEMEnergyFraction (relative to uncorrected jet energy)"),
     NTupleVariable("chHMult", lambda x : x.chargedHadronMultiplicity(), int, mcOnly = False,help="chargedHadronMultiplicity from PFJet.h"),
     NTupleVariable("neHMult", lambda x : x.neutralHadronMultiplicity(), int, mcOnly = False,help="neutralHadronMultiplicity from PFJet.h"),
     NTupleVariable("phMult", lambda x : x.photonMultiplicity(), int, mcOnly = False,help="photonMultiplicity from PFJet.h"),

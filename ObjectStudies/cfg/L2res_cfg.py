@@ -78,7 +78,7 @@ if getHeppyOption("loadSamples"):
         selectedComponents = [ TT_pow ]
     else: 
         selectedComponents = [ JetHT_Run2016C_03Feb2017 ]
-        selectedComponents[0].files = ['root://cms-xrd-global.cern.ch//store/data/Run2016H/JetHT/MINIAOD/18Apr2017-v1/00000/00E62F3E-F225-E711-A460-A0000420FE80.root']
+        #selectedComponents[0].files = ['root://cms-xrd-global.cern.ch//store/data/Run2016H/JetHT/MINIAOD/18Apr2017-v1/00000/00E62F3E-F225-E711-A460-A0000420FE80.root']
 
     for comp in selectedComponents:
             comp.files = comp.files[:1]
