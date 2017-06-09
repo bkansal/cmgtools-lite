@@ -49,6 +49,8 @@ sequence.append( treeProducer )
 test       = 'mc'
 preprocess = True
 
+if getHeppyOption("noPreProcessor")  : preprocess = False
+
 if getHeppyOption("mc")  : test = "mc"
 if getHeppyOption("data"): test = "data"
 
