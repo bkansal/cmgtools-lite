@@ -7,13 +7,13 @@
 #python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016G_03Feb2017
 #python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016H_03Feb2017_v2
 #python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016H_03Feb2017_v3
-python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016B_18Apr2017
-python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016C_18Apr2017
-python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016D_18Apr2017
-python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016E_18Apr2017
-python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016F_18Apr2017
-python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016G_18Apr2017
-python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data JetHT_Run2016H_18Apr2017
+python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data -o noPreProcessor JetHT_Run2016B_18Apr2017
+python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data -o noPreProcessor JetHT_Run2016C_18Apr2017
+python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data -o noPreProcessor JetHT_Run2016D_18Apr2017
+python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data -o noPreProcessor JetHT_Run2016E_18Apr2017
+python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data -o noPreProcessor JetHT_Run2016F_18Apr2017
+python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data -o noPreProcessor JetHT_Run2016G_18Apr2017
+python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o data -o noPreProcessor JetHT_Run2016H_18Apr2017
 
 #python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o mc QCD_Pt50to80
 #python launch.py --remoteDir="L2res" --cfg=../L2res_cfg.py --unitsPerJob=2 --production_label="V4" -o mc QCD_Pt80to120
