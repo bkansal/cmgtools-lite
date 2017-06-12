@@ -61,10 +61,11 @@ if getHeppyOption("loadSamples"):
     from CMGTools.RootTools.samples.samples_13TeV_RunIISummer16MiniAODv2 import *
     from CMGTools.RootTools.samples.samples_13TeV_DATA2016 import *
     from CMGTools.RootTools.samples.samples_13TeV_signals import *
+    from CMGTools.ObjectStudies.samples.samples_jet_private import *
     for sample in dataSamples:
         sample.json="$CMSSW_BASE/src/CMGTools/TTHAnalysis/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
     if test.lower() == 'mc': 
-        selectedComponents = [ TT_pow ]
+        selectedComponents = [ SingleNeutrino ]
     else: 
         selectedComponents = [ ZeroBias_Run2016C_03Feb2017 ]
     for comp in selectedComponents:

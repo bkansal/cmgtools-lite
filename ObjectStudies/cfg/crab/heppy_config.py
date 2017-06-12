@@ -1,1 +1,1 @@
-../L2res_cfg.py
+../L1res_cfg.py
