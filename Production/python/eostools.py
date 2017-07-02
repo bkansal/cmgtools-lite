@@ -20,6 +20,7 @@ setCAFPath()
 try:
     import cmsIO
 except ImportError as e:
+    pass
     import logging
     logger = logging.getLogger(__name__)
     logger.warning(str(e))

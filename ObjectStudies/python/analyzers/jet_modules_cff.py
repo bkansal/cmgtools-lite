@@ -117,6 +117,7 @@ pileUpAna = cfg.Analyzer(
     )
 
 
+
 ## Gen Info Analyzer (generic, but should be revised)
 genAna = cfg.Analyzer(
     GeneratorAnalyzer, name="GeneratorAnalyzer",
@@ -152,6 +153,9 @@ lheWeightAna = cfg.Analyzer(
 
 from PhysicsTools.Heppy.analyzers.gen.LHEAnalyzer import LHEAnalyzer
 lheAna = LHEAnalyzer.defaultConfig
+
+from CMGTools.TTHAnalysis.analyzers.ttHGenBinningAnalyzer import ttHGenBinningAnalyzer
+genBinAna =  cfg.Analyzer( ttHGenBinningAnalyzer, name = 'ttHGenBinningAnalyzer' )
 
 from CMGTools.ObjectStudies.analyzers.TruePileupAnalyzer import TruePileupAnalyzer
 truePUAna = TruePileupAnalyzer.defaultConfig
@@ -379,6 +383,7 @@ jet_coreSequence = [
     pileUpAna,
     truePUAna,
     genAna,
+    genBinAna,
     lheAna,
     lheWeightAna,
    #eventSelector,

@@ -3,6 +3,7 @@
 ##########################################################
 import PhysicsTools.HeppyCore.framework.config as cfg
 from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
+import pickle, os
 
 #Load all analyzers
 from CMGTools.ObjectStudies.analyzers.jet_modules_cff import *
@@ -29,9 +30,57 @@ triggerFlagsAna.triggerBits         = L2res_triggers
 from CMGTools.ObjectStudies.analyzers.jet_treeProducer import *
 
 # add the offset collections to the default (global) collections
-L2res_collections = jet_globalCollections
+L2res_collections = jet_collections
 L2res_collections.update( L2res_extra_collections )
 L2res_globalVariables = jet_globalVariables + L2res_extra_variables 
+
+test       = 'mc'
+if getHeppyOption("mc")  : test = "mc"
+if getHeppyOption("data"): test = "data"
+
+coneSizes = [ 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 ]
+
+if getHeppyOption("noPreProcessor")  : 
+    preprocess = False
+else:
+    preprocess = True
+    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster.py"
+    preprocessorPKL  = "$CMSSW_BASE/src/CMGTools/ObjectStudies/data/cmsswPreprocessorOptions.pkl"
+    # to be consumed by the 
+    pickle.dump( {
+        'isMC': (test=='mc'), 
+        'jetCollections':[ {'coneSize':coneSize, 'flavor':'PFchs'} for coneSize in coneSizes ]}, 
+        file(os.path.expandvars( preprocessorPKL ), 'w') 
+        )
+         
+
+if test=='mc':
+    pass
+else:                                     
+    triggerFlagsAna.unrollbits          = True
+    triggerFlagsAna.saveIsUnprescaled   = True
+    triggerFlagsAna.checkL1prescale     = True
+
+if preprocess:
+    from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
+    preprocessor = CmsswPreprocessor(preprocessorFile)
+    jetAna.jetCol   = ("selectedPatJetsAK4PFCHS","","USER")
+    jetAna.genJetCol= ("ak4GenJetsNoNu","","USER")
+
+    for coneSize in coneSizes:
+        if coneSize == 0.4: continue
+        jetAna_ = jetAna.clone( 
+            name = "jetAnalyzer_R%i"%(10*coneSize),
+            jetCol = ("selectedPatJetsAK%iPFCHS"%(10*coneSize),"","USER"),
+            genJetCol= ("ak%iGenJetsNoNu"%(10*coneSize),"","USER"),  
+            collectionPostFix = 'R%i'%(10*coneSize)
+            )
+        sequence.append( jetAna_ )
+        L2res_collections.update( { 
+            "cleanJetsAllR%i"%(10*coneSize)       : NTupleCollection("JetR%i"%(10*coneSize), jetTypeSusyExtra, 25, help="all jets after full selection and cleaning, sorted by pt, R=%2.1f"%coneSize),
+        } )
+else:
+    preprocessor = None
 
 treeProducer = cfg.Analyzer(
      AutoFillTreeProducer, name='treeProducer',
@@ -46,41 +95,19 @@ treeProducer = cfg.Analyzer(
 # Append it to the sequence
 sequence.append( treeProducer )
 
-test       = 'mc'
-preprocess = True
-
-if getHeppyOption("noPreProcessor")  : preprocess = False
-
-if getHeppyOption("mc")  : test = "mc"
-if getHeppyOption("data"): test = "data"
-
-if test=='mc':
-    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster_mc.py"
-else:                                     
-    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster_data.py"
-    triggerFlagsAna.unrollbits          = True
-    triggerFlagsAna.saveIsUnprescaled   = True
-    triggerFlagsAna.checkL1prescale     = True
-
-if preprocess:
-    from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
-    preprocessor = CmsswPreprocessor(preprocessorFile)
-    jetAna.jetCol   = ("selectedPatJetsAK4PFCHS","","USER")
-    jetAna.genJetCol= ("ak4GenJetsNoNu","","USER")
-else:
-    preprocessor = None
-
 if getHeppyOption("loadSamples"):
     from CMGTools.RootTools.samples.samples_13TeV_RunIISummer16MiniAODv2 import *
     from CMGTools.RootTools.samples.samples_13TeV_DATA2016 import *
     from CMGTools.RootTools.samples.samples_13TeV_signals import *
+    from CMGTools.ObjectStudies.samples.samples_jet_private import *
     for sample in dataSamples:
         sample.json="$CMSSW_BASE/src/CMGTools/TTHAnalysis/data/json/Cert_271036-284044_13TeV_23Sep2016ReReco_Collisions16_JSON.txt"
     if test.lower() == 'mc': 
-        selectedComponents = [ TT_pow ]
+        selectedComponents = [ QCD_flat_noPU ]
     else: 
         selectedComponents = [ JetHT_Run2016C_03Feb2017 ]
-        #selectedComponents[0].files = ['root://cms-xrd-global.cern.ch//store/data/Run2016H/JetHT/MINIAOD/18Apr2017-v1/00000/00E62F3E-F225-E711-A460-A0000420FE80.root']
+        #selectedComponents[0].files = ['file:/afs/cern.ch/user/z/zdemirag/public/forRobert/pickevents_optionA_dijets.root']
+        selectedComponents[0].files = ['file:/afs/cern.ch/user/z/zdemirag/public/forRobert/pickevents_optionB_dijets.root']
 
     for comp in selectedComponents:
             comp.files = comp.files[:1]

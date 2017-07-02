@@ -24,6 +24,7 @@ jet_globalVariables = [
 
     NTupleVariable("mu",  lambda ev: getattr(ev, "truePileup_mu", -1), float, help="true PU (mu) from pileup_latest.txt for data, same as nTrueInt for MC."),
     NTupleVariable("truePUIntBX0",  lambda ev: getattr(ev, "truePileup_n", -1), float, mcOnly=True, help="nPU (int number, as drawn from Poissonian with mean nTrueInt) for BX=0"),
+    NTupleVariable("genBin", lambda ev: ev.genBin, float, mcOnly=True, help="generator binning variable (e.g. ptHat)" ),
 ]
 
 # new ntuple type for genjets
@@ -42,8 +43,7 @@ jetTypeSusyExtra.addVariables( [
 jet_globalObjects = { "met" :  NTupleObject("met", metType, help="PF E_{T}^{miss}, after type 1 corrections"),
                     }
 
-jet_globalCollections = {
-
+jet_collections = {
             "genParticles"       : NTupleCollection("genPartAll",  genParticleWithMotherId, 200, help="all pruned genparticles"),
             "selectedLeptons"    : NTupleCollection("LepGood", leptonTypeSusy, 8, help="Leptons after the preselection"),
             "otherLeptons"       : NTupleCollection("LepOther", leptonTypeSusy, 8, help="Leptons after the preselection"),
@@ -66,14 +66,18 @@ jet_metVariables = [
 ## PV and PU information.
 # define a new ntuple type for the IT PU vertices
 pvType = NTupleObjectType("VertexType", variables = [   
-    NTupleVariable("z",      lambda v:v.z(), help="z positon" ), 
+    NTupleVariable("z",                 lambda v:v.z(), help="z positon" ), 
+    NTupleVariable("ndof",              lambda v:v.ndof(), help="ndof" ), 
+    NTupleVariable("isGood",            lambda v: not( v.isFake() or v.ndof()<=4 or abs(v.z())>24 or v.position().Rho()>2), int, help="isGood" ), 
+    NTupleVariable("isFake",            lambda v: v.isFake() , int, help="isFake" ), 
+    NTupleVariable("normalizedChi2",    lambda v:v.normalizedChi2(), help="normalizedChi2" ), 
     ])
 puInfoType = NTupleObjectType("puInfoType", variables = [   
     NTupleVariable("truePUInt",      lambda p:p.nPU(), mcOnly = True, help=" number of true PU interactions" ), 
     ])
 
 PVPU_collections = {
-    'goodVertices' : NTupleCollection( "GoodVertices", pvType, 100, help = "good offline primary vertices"),
+    'vertices' : NTupleCollection( "vertices", pvType, 100, help = "all offline primary vertices"),
     'pileUpInfo'   : NTupleCollection( "BX", puInfoType, 20, mcOnly = True, help = "all BX (sorted -12 ... +3)")
 }
 

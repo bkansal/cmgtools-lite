@@ -3,6 +3,7 @@
 ##########################################################
 import PhysicsTools.HeppyCore.framework.config as cfg
 from PhysicsTools.HeppyCore.framework.heppy_loop import getHeppyOption
+import pickle, os
 
 #Load all analyzers
 from CMGTools.ObjectStudies.analyzers.jet_modules_cff import *
@@ -19,7 +20,7 @@ sequence += jet_objectSequence
 from CMGTools.ObjectStudies.analyzers.jet_treeProducer import *
 
 # add the offset collections to the default (global) collections
-L1L2L3_collections = jet_globalCollections
+L1L2L3_collections = jet_collections
 L1L2L3_collections.update( L1L2L3_extra_collections )
 L1L2L3_globalVariables = jet_globalVariables + L1L2L3_extra_variables
 
@@ -37,18 +38,51 @@ treeProducer = cfg.Analyzer(
 sequence.append( treeProducer )
 
 test       = 'mc'
-preprocess = True
-
 if getHeppyOption("mc")  : test = "mc"
 if getHeppyOption("data"): test = "data"
 
+coneSizes = [ 0.3, 0.4, 0.5, 0.6, 0.7, 0.8 ]
+
+if getHeppyOption("noPreProcessor")  :
+    preprocess = False
+else:
+    preprocess = True
+    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster.py"
+    preprocessorPKL  = "$CMSSW_BASE/src/CMGTools/ObjectStudies/data/cmsswPreprocessorOptions.pkl"
+    # to be consumed by the 
+    pickle.dump( {
+        'isMC': (test=='mc'),
+        'jetCollections':[ {'coneSize':coneSize, 'flavor':'PFchs'} for coneSize in coneSizes ]},
+        file(os.path.expandvars( preprocessorPKL ), 'w')
+        )
+
 if test=='mc':
-    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster_mc.py"
-else:                                     
-    preprocessorFile = "$CMSSW_BASE/python/CMGTools/ObjectStudies/preprocessor/recluster_data.py"
+    pass
+else:
     triggerFlagsAna.unrollbits          = True
     triggerFlagsAna.saveIsUnprescaled   = True
     triggerFlagsAna.checkL1prescale     = True
+
+if preprocess:
+    from PhysicsTools.Heppy.utils.cmsswPreprocessor import CmsswPreprocessor
+    preprocessor = CmsswPreprocessor(preprocessorFile)
+    jetAna.jetCol   = ("selectedPatJetsAK4PFCHS","","USER")
+    jetAna.genJetCol= ("ak4GenJetsNoNu","","USER")
+
+    for coneSize in coneSizes:
+        if coneSize == 0.4: continue
+        jetAna_ = jetAna.clone(
+            name = "jetAnalyzer_R%i"%(10*coneSize),
+            jetCol = ("selectedPatJetsAK%iPFCHS"%(10*coneSize),"","USER"),
+            genJetCol= ("ak%iGenJetsNoNu"%(10*coneSize),"","USER"),
+            collectionPostFix = 'R%i'%(10*coneSize)
+            )
+        sequence.append( jetAna_ )
+        L1L2L3_collections.update( {
+            "cleanJetsAllR%i"%(10*coneSize)       : NTupleCollection("JetR%i"%(10*coneSize), jetTypeSusyExtra, 25, help="all jets after full selection and cleaning, sorted by pt, R=%2.1f"%coneSize),
+        } )
+else:
+    preprocessor = None
 
 if getHeppyOption("loadSamples"):
     from CMGTools.RootTools.samples.samples_13TeV_RunIISummer16MiniAODv2 import *
