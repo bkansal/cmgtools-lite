@@ -36,6 +36,9 @@ for jetCollection in jetCollections:
     stm.append( 'keep patJets_%s_*_*'%( jetCollection['patJetCollectionName'] ) )
     stm.append( 'keep recoGenJets_%s_*_*'%( jetCollection['genJetName'] ) )
 
+# Bad ecal calib filter decision
+stm.append( 'keep *_ecalBadCalibFilter*_*_*' )
+
 print "Keep statements:", stm
 from PhysicsTools.PatAlgos.patEventContent_cff import patEventContent
 
@@ -48,7 +51,7 @@ process.endpath= cms.EndPath(process.out)
 if options['isMC']:
     filename = 'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv2/QCD_Pt-15to7000_TuneCUETP8M1_FlatP6_13TeV_pythia8/MINIAODSIM/NoPU_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/60000/02758D78-52C0-E611-B027-0025905B8576.root'
 else:
-    filename = 'root://cms-xrd-global.cern.ch//store/data/Run2016D/ZeroBias/MINIAOD/03Feb2017-v1/100000/0057FDCB-28EC-E611-BB28-02163E019BAA.root'
+    filename = 'file:/afs/cern.ch/user/p/petyt/public/ForRobert/pickevents.root'
 
 ## Input files
 process.source = cms.Source("PoolSource",
@@ -137,6 +140,24 @@ from PhysicsTools.PatAlgos.tools.pfTools import *
 if not options['isMC']: 
     removeMCMatching(process, ['Jets'])
 
+# badEcalCalibFilter
+
+process.load("RecoMET.METFilters.ecalBadCalibFilter_cfi")
+process.ecalBadCalibFilter.taggingMode = True
+#process.ecalBadCalibFilter.debug = True
+process.ecalBadCalibFilterEMin25 = process.ecalBadCalibFilter.clone( 
+    EBminet        = cms.double(25.),
+    EEminet        = cms.double(25.)
+    )
+process.ecalBadCalibFilterEMin75 = process.ecalBadCalibFilter.clone( 
+    EBminet        = cms.double(75.),
+    EEminet        = cms.double(75.)
+    )
+process.p += process.ecalBadCalibFilter
+process.p += process.ecalBadCalibFilterEMin25
+process.p += process.ecalBadCalibFilterEMin75
+
+
 ## Adapt primary vertex collection
 adaptPVs(process, pvCollection=cms.InputTag('offlineSlimmedPrimaryVertices'))
 
@@ -144,5 +165,3 @@ process.options = cms.untracked.PSet(
         wantSummary = cms.untracked.bool(True), # while the timing of this is not reliable in unscheduled mode, it still helps understanding what was actually run
         allowUnscheduled = cms.untracked.bool(True)
 )
-
-

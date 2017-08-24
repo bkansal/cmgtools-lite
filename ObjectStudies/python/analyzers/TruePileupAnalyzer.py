@@ -49,6 +49,7 @@ class TruePileupAnalyzer( Analyzer ):
 
         if self.cfg_comp.isMC:
 
+            self.readCollections( event.input )
             if not hasattr( event, "pileUpInfo"):
                 event.pileUpInfo = map( PileUpSummaryInfo,
                                     self.mchandles['pusi'].product() )

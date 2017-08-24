@@ -17,7 +17,20 @@ JetHT_Run2016F_18Apr2017 = kreator.makeDataComponent("JetHT_Run2016F_18Apr2017" 
 JetHT_Run2016G_18Apr2017 = kreator.makeDataComponent("JetHT_Run2016G_18Apr2017"         , "/JetHT/Run2016G-18Apr2017-v1/MINIAOD"         , "CMS", ".*root", json)
 JetHT_Run2016H_18Apr2017 = kreator.makeDataComponent("JetHT_Run2016H_18Apr2017"         , "/JetHT/Run2016H-18Apr2017-v1/MINIAOD"         , "CMS", ".*root", json)
 
-JetHT_legacy = [ JetHT_Run2016B_18Apr2017, JetHT_Run2016C_18Apr2017, JetHT_Run2016D_18Apr2017, JetHT_Run2016E_18Apr2017, JetHT_Run2016F_18Apr2017, JetHT_Run2016G_18Apr2017, JetHT_Run2016F_18Apr2017 ]
+JetHT_legacy_18Apr2017 = [ JetHT_Run2016B_18Apr2017, JetHT_Run2016C_18Apr2017, JetHT_Run2016D_18Apr2017, JetHT_Run2016E_18Apr2017, JetHT_Run2016F_18Apr2017, JetHT_Run2016G_18Apr2017, JetHT_Run2016F_18Apr2017 ]
+
+JetHT_Run2016B_07Aug2017 = kreator.makeDataComponent("JetHT_Run2016B_07Aug2017"         , "/JetHT/Run2016B-07Aug17_ver2-v1/MINIAOD"         , "CMS", ".*root", json)
+JetHT_Run2016C_07Aug2017 = kreator.makeDataComponent("JetHT_Run2016C_07Aug2017"         , "/JetHT/Run2016C-07Aug17-v1/MINIAOD"         , "CMS", ".*root", json)
+#JetHT_Run2016D_07Aug2017 = kreator.makeDataComponent("JetHT_Run2016D_07Aug2017"         , "/JetHT/Run2016D-07Aug17-v1/MINIAOD"         , "CMS", ".*root", json)
+#JetHT_Run2016E_07Aug2017 = kreator.makeDataComponent("JetHT_Run2016E_07Aug2017"         , "/JetHT/Run2016E-07Aug17-v1/MINIAOD"         , "CMS", ".*root", json)
+JetHT_Run2016F_07Aug2017 = kreator.makeDataComponent("JetHT_Run2016F_07Aug2017"         , "/JetHT/Run2016F-07Aug17-v1/MINIAOD"         , "CMS", ".*root", json)
+JetHT_Run2016G_07Aug2017 = kreator.makeDataComponent("JetHT_Run2016G_07Aug2017"         , "/JetHT/Run2016G-07Aug17-v1/MINIAOD"         , "CMS", ".*root", json)
+JetHT_Run2016H_07Aug2017 = kreator.makeDataComponent("JetHT_Run2016H_07Aug2017"         , "/JetHT/Run2016H-07Aug17-v1/MINIAOD"         , "CMS", ".*root", json)
+
+JetHT_legacy_07Aug2017 = [ JetHT_Run2016B_07Aug2017, JetHT_Run2016C_07Aug2017, \
+    #JetHT_Run2016D_07Aug2017, 
+    #JetHT_Run2016E_07Aug2017, 
+    JetHT_Run2016F_07Aug2017, JetHT_Run2016G_07Aug2017, JetHT_Run2016F_07Aug2017 ]
 
 SingleNeutrino = kreator.makeMyPrivateMCComponent( "SingleNeutrino", "/SingleNeutrino/schoef-mAOD8026p1-eb6a5691051d9ec7d68d729bb9e6c6fb/USER", "PRIVATE", ".*root", 'phys03', -1, useAAA=True) 
 
@@ -25,7 +38,7 @@ QCD_flat_noPU = kreator.makeMCComponent("QCD_flat_noPU", "/QCD_Pt-15to7000_TuneC
 QCD_flat =      kreator.makeMCComponent("QCD_flat",      "/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/RunIISummer16MiniAODv2-PUFlat0to70_magnetOn_80X_mcRun2_asymptotic_2016_TrancheIV_v4-v1/MINIAODSIM", "CMS", ".*root", -1, useAAA=True)
 
 private_mcSamples   = [ SingleNeutrino, QCD_flat_noPU, QCD_flat]
-private_dataSamples = JetHT_legacy
+private_dataSamples = JetHT_legacy_18Apr2017 + JetHT_legacy_07Aug2017
 private_samples     = private_dataSamples + private_mcSamples 
 
 from CMGTools.TTHAnalysis.setup.Efficiencies import *
