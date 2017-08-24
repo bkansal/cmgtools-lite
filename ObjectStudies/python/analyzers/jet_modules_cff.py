@@ -160,8 +160,8 @@ genBinAna =  cfg.Analyzer( ttHGenBinningAnalyzer, name = 'ttHGenBinningAnalyzer'
 from CMGTools.ObjectStudies.analyzers.TruePileupAnalyzer import TruePileupAnalyzer
 truePUAna = TruePileupAnalyzer.defaultConfig
 
-from CMGTools.ObjectStudies.analyzers.CHSDoctor import CHSDoctor
-chsDoc = CHSDoctor.defaultConfig
+from CMGTools.ObjectStudies.analyzers.chsDoctor import chsDoctor
+chsDoc = chsDoctor.defaultConfig
 
 pdfwAna = cfg.Analyzer(
     PDFWeightsAnalyzer, name="PDFWeightsAnalyzer",
